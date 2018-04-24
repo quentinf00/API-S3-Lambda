@@ -6,6 +6,7 @@ provider:
   #The next 2 lines specify the python3.6 kernel lambda function in europe
   name: aws
   runtime: python3.6
+  timeout: 30
   region: eu-central-1
   # This specify environment variables common to all the lambdas
   environment:
@@ -22,12 +23,6 @@ provider:
         - "s3:*"
       Resource:
           - "*"
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "s3:*"
-        Resource:
-            - "*"
  #We add the necessary permission to use Athena
     - Effect: "Allow"
       Action:

@@ -16,10 +16,9 @@ virtualenv venv  — python=python3.6
 source venv/bin/activate
 
 yarn install
-pip install -r requirements.txt
 
-sls invoke local -f init_athena_schema
 sls deploy
+sls invoke -f init_athena_schema
 ```
 
 # Usage
@@ -30,7 +29,7 @@ export ENDPOINT=FILL_WITH_THE_ENDPOINT_GENERATED_DURING_THE_DEPLOYMENT # e.g htt
 curl -X GET $ENDPOINT/user/list
 
 # Create a new user
-curl -X POST $ENDPOINT/user
+curl -X POST $ENDPOINT/user \
   -d '{
 "first_name": "Hello",
 "last_name": "Z",

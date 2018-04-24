@@ -10,13 +10,13 @@ athena = boto3.client('athena')
 
 
 # This is the function that start the execution and get the results
-def get_results(query):
+def get_results(query, database='mydb'):
     query_id = hash(query)
 
     response = athena.start_query_execution(
         QueryString = query,
         QueryExecutionContext={
-            'Database': 'mydb'
+            'Database': database
         },
         ResultConfiguration={
             'OutputLocation': f's3://{ATHENA_BUCKET}/{query_id}'
@@ -46,6 +46,9 @@ def is_execution_done(exec_id):
     response = athena.get_query_execution(
         QueryExecutionId=exec_id,
     )
+    if response['QueryExecution']['Status']['State'] == 'FAILED':
+        raise Exception('Failed Athena query')
+
     return response['QueryExecution']['Status']['State'] == 'SUCCEEDED'
 
 # This functions just parses the rows and return a list of dictionnaries
@@ -72,7 +75,7 @@ def init_schema(event, context):
     db = get_results(f"""
         CREATE DATABASE IF NOT EXISTS mydb
         LOCATION 's3://{BUCKET}/';
-    """)
+    """, 'default')
 
     table = get_results(f"""
         CREATE EXTERNAL TABLE IF NOT exists users (
