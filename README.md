@@ -51,3 +51,13 @@ curl -X PUT $ENDPOINT/user/$USER_ID \
 # Delete the existing user
 curl -X DELETE $ENDPOINT/user/$USER_ID
 ```
+
+# Notes:
+
+If you liked this repo I kept working on this project and added a few more features:
+
+ - Automatic generation of the Athena table Schema
+ - Simplification of the config using Flask Resource
+ - (tests !!)
+
+you can find the repo in development [here](https://github.com/quentinf00/serverless-rest)
