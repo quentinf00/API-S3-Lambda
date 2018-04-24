@@ -1,0 +1,105 @@
+#This is the name of the service
+service: sls-rest
+
+#This is the common serverless config of the project
+provider:
+  #The next 2 lines specify the python3.6 kernel lambda function in europe
+  name: aws
+  runtime: python3.6
+  region: eu-central-1
+  # This specify environment variables common to all the lambdas
+  environment:
+    # This will define an environment variable BUCKET with the name of the bucket created on line 68
+    BUCKET:
+      Ref: S3BucketState
+ #We add a new bucket to store the query results
+    ATHENA_BUCKET:
+       Ref: S3AthenaResultBucket
+  # This describes the permissions common to all the lambdas
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource:
+          - "*"
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "s3:*"
+        Resource:
+            - "*"
+ #We add the necessary permission to use Athena
+    - Effect: "Allow"
+      Action:
+        - "glue:*"
+      Resource:
+          - "*"
+    - Effect: "Allow"
+      Action:
+        - "athena:*"
+      Resource:
+          - "*"
+# The package tells what should be included and excluded from the zip package
+package:
+  exclude:
+    - venv/**
+    - node_modules/**
+# This is the configuration of the different lambda function we want to deploy
+functions:
+  # The user_get function will be triggered on a GET /user/{id} and will execute the user.get function
+  user_get:
+    handler: user.get
+    events:
+      - http:
+          path: user/{id}
+          method: GET
+  # The user_post function will be triggered on a POST /user and will execute the user.post function
+  user_post:
+    handler: user.post
+    events:
+      - http:
+          path: user
+          method: POST
+  # The user_delete function will be triggered on a DELETE /user/{id} and will execute the user.delete function
+  user_delete:
+    handler: user.delete
+    events:
+      - http:
+          path: user/{id}
+          method: DELETE
+  # The user_put function will be triggered on a PUT /user/{id} and will execute the user.put function
+  user_put:
+    handler: user.put
+    events:
+      - http:
+          path: user/{id}
+          method: PUT
+  # The user_list function will be triggered on a GET /user/list and will execute the user.list function
+  user_list:
+    handler: user.all
+    events:
+      - http:
+          path: user/list
+          method: GET
+ # We declare the new function to initialize the database
+  init_athena_schema:
+    handler: athena.init_schema
+
+#This creates an s3 bucket
+resources:
+  Resources:
+    S3BucketState:
+      Type: AWS::S3::Bucket
+  # We create the new bucket
+    S3AthenaResultBucket:
+      Type: AWS::S3::Bucket
+
+# This is the custom config ...
+custom:
+  # ... for the serverless-python-requirements plugin
+  pythonRequirements:
+    dockerizePip: True
+
+#This specify the plugins to use
+plugins:
+  - serverless-python-requirements
