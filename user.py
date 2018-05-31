@@ -178,7 +178,7 @@ get, post, put, delete, _ = UserResource.get_api_methods()
 
 @handle_api_error
 def all(event, context):
-    users = athena.get_results("""
-        SELECT * FROM mydb.users
+    users = athena.get_results(f"""
+        SELECT * FROM {athena.DB}.users
     """)
     return users

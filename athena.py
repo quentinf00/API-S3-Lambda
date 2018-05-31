@@ -5,16 +5,16 @@ from time import sleep
 # This is the new bucket that stores the query results
 ATHENA_BUCKET = os.getenv('ATHENA_BUCKET', 'bucket')
 BUCKET = os.getenv('BUCKET', 'bucket')
-
+DB = f'{BUCKET.replace("-","_")}'
 athena = boto3.client('athena')
 
 
 # This is the function that start the execution and get the results
-def get_results(query, database='mydb'):
+def get_results(query, database=DB):
     query_id = hash(query)
 
     response = athena.start_query_execution(
-        QueryString = query,
+        QueryString=query,
         QueryExecutionContext={
             'Database': database
         },
@@ -73,7 +73,7 @@ def format_result(results):
 
 def init_schema(event, context):
     db = get_results(f"""
-        CREATE DATABASE IF NOT EXISTS mydb
+        CREATE DATABASE IF NOT EXISTS {DB}
         LOCATION 's3://{BUCKET}/';
     """, 'default')
 

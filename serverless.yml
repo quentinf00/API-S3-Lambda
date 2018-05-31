@@ -1,5 +1,5 @@
 #This is the name of the service
-service: sls-rest
+service: sls-rest-formation
 
 #This is the common serverless config of the project
 provider:
@@ -13,7 +13,7 @@ provider:
     # This will define an environment variable BUCKET with the name of the bucket created on line 68
     BUCKET:
       Ref: S3BucketState
- #We add a new bucket to store the query results
+ # We add a new bucket to store the query results
     ATHENA_BUCKET:
        Ref: S3AthenaResultBucket
   # This describes the permissions common to all the lambdas
