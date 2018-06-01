@@ -12,7 +12,7 @@
 git clone https://github.com/quentinf00/API-S3-Lambda.git
 cd API-S3-Lambda
 
-virtualenv venv  — python=python3.6
+virtualenv venv  --python=python3.6
 source venv/bin/activate
 
 yarn install
